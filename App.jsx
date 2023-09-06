@@ -1,11 +1,13 @@
+import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar'
 import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
 import Home from './components/navigation/Home'
 import NewTask from './components/navigation/NewTask'
 import { TodoListProvider } from './contexts/todo-list.context'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Platform } from 'react-native'
 
-const Stack = createStackNavigator()
+const Stack = createNativeStackNavigator()
 
 export default function App() {
 	return (
@@ -20,7 +22,8 @@ export default function App() {
 						screenOptions={{
 							headerShown: false,
 							headerShadowVisible: false,
-							presentation: 'modal',
+							presentation: 'formSheet',
+							animation: Platform.OS === 'ios' ? 'default' : 'fade_from_bottom',
 							gestureEnabled: true,
 						}}
 					>
