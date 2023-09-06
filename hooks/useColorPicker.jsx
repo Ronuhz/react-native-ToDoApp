@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import * as Haptics from 'expo-haptics'
 
-export const COLORS = [
+const COLORS = [
 	'#FFFFFF', // White
 	'#FFDDC1', // Pastel Orange
 	'#B5EAD7', // Pastel Turquoise
@@ -18,6 +19,7 @@ export const COLORS = [
 
 export const useColorPicker = () => {
 	const [selectedColorIndex, setSelectedColorIndex] = useState(0)
+	const [color, SetColor] = useState(COLORS[selectedColorIndex])
 
 	const ColorPicker = (
 		<View
@@ -33,7 +35,11 @@ export const useColorPicker = () => {
 			{COLORS.map((color, index) => (
 				<TouchableOpacity
 					key={index}
-					onPress={() => setSelectedColorIndex(index)}
+					onPress={() => {
+						setSelectedColorIndex(index)
+						SetColor(COLORS[index])
+						Haptics.selectionAsync()
+					}}
 					style={[
 						styles.colorCircle,
 						{
@@ -46,7 +52,7 @@ export const useColorPicker = () => {
 		</View>
 	)
 
-	return { ColorPicker, selectedColorIndex }
+	return { ColorPicker, color }
 }
 
 const styles = StyleSheet.create({
@@ -54,10 +60,11 @@ const styles = StyleSheet.create({
 		width: 48,
 		height: 48,
 		borderRadius: 60,
-		shadowColor: 'black',
-		shadowRadius: 1,
+		shadowColor: 'gray',
+		shadowRadius: 5,
 		shadowOffset: 1,
-		shadowOpacity: 0.4,
+		shadowOpacity: 0.2,
+		elevation: 5, //Android shadow
 	},
 	colorCircleSelected: {
 		borderColor: '#007aff',

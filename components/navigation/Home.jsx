@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 import * as Haptics from 'expo-haptics'
 import {
 	View,
@@ -8,9 +8,9 @@ import {
 	TouchableOpacity,
 	Pressable,
 	Platform,
+	SafeAreaView,
 } from 'react-native'
 import Task from '../Task'
-import { SafeAreaView } from 'react-native'
 import {
 	ActiveTasksContext,
 	CompletedTasksContext,
@@ -22,11 +22,13 @@ const Home = ({ navigation }) => {
 		CompletedTasksContext
 	)
 
+	const totalTasks = activeTasks.length + completedTasks.length
+
 	const completeTask = (index) => {
 		let activesCopy = [...activeTasks]
 		let completedTask = activesCopy.splice(index, 1)[0]
 		setActiveTasks(activesCopy)
-		setCompletedTasks([...completedTasks, completedTask])
+		setCompletedTasks([completedTask, ...completedTasks])
 	}
 
 	const uncompleteTask = (index) => {
@@ -38,6 +40,7 @@ const Home = ({ navigation }) => {
 
 	return (
 		<SafeAreaView style={styles.tasksWrapper}>
+			{/* Header */}
 			<View
 				style={{
 					flexDirection: 'row',
@@ -47,7 +50,14 @@ const Home = ({ navigation }) => {
 				}}
 			>
 				<Text style={styles.sectionTitle}>Today's tasks</Text>
-				<Pressable onPress={() => navigation.navigate('NewTask')}>
+
+				{/* Add task button */}
+				<Pressable
+					onPress={() => {
+						navigation.navigate('NewTask')
+						Haptics.impactAsync()
+					}}
+				>
 					{({ pressed }) => (
 						<Text
 							style={[
@@ -62,6 +72,18 @@ const Home = ({ navigation }) => {
 			</View>
 
 			<ScrollView style={styles.items}>
+				{/* Welcome */}
+				{totalTasks === 0 ? (
+					<View style={styles.welcomeContainer}>
+						<Text style={styles.welcomeText}>You have 0 tasks.</Text>
+						<Text style={styles.welcomeText}>
+							Click on the + to add a new one.
+						</Text>
+					</View>
+				) : (
+					<></>
+				)}
+
 				{/* Active tasks */}
 				{activeTasks.map((task, index) => (
 					<TouchableOpacity
@@ -103,9 +125,15 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 	items: {
-		marginTop: 20,
+		paddingTop: 20,
 		paddingHorizontal: 20,
 	},
+	welcomeContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginTop: 20,
+	},
+	welcomeText: { fontSize: 18, color: 'white' },
 })
 
 export default Home

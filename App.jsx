@@ -13,7 +13,7 @@ export default function App() {
 	return (
 		<TodoListProvider>
 			<NavigationContainer>
-				<StatusBar style='auto'></StatusBar>
+				<StatusBar style='dark'></StatusBar>
 				<Stack.Navigator
 					initialRouteName='Home'
 					screenOptions={{ headerShown: false, headerShadowVisible: false }}

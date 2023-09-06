@@ -1,4 +1,3 @@
-import { X } from 'lucide-react-native'
 import { CommonActions } from '@react-navigation/native'
 import { ActiveTasksContext } from '../../contexts/todo-list.context'
 import { useContext, useState } from 'react'
@@ -12,11 +11,12 @@ import {
 	Platform,
 	Keyboard,
 } from 'react-native'
-import { COLORS, useColorPicker } from '../../hooks/useColorPicker'
+import { useColorPicker } from '../../hooks/useColorPicker'
+import * as Haptics from 'expo-haptics'
 
 const NewTask = ({ navigation }) => {
 	const { activeTasks, setActiveTasks } = useContext(ActiveTasksContext)
-	const { ColorPicker, selectedColorIndex } = useColorPicker()
+	const { ColorPicker, color } = useColorPicker()
 	const [task, setTask] = useState({
 		title: '',
 		color: '',
@@ -25,10 +25,9 @@ const NewTask = ({ navigation }) => {
 	const addTask = () => {
 		if (!task.title) return
 
-		setActiveTasks([
-			{ ...task, color: COLORS[selectedColorIndex] },
-			...activeTasks,
-		])
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+
+		setActiveTasks([{ ...task, color }, ...activeTasks])
 
 		Keyboard.dismiss()
 		navigation.dispatch(CommonActions.goBack())
@@ -43,16 +42,28 @@ const NewTask = ({ navigation }) => {
 		<SafeAreaView style={{ margin: 20 }}>
 			{/* Header */}
 			<View style={styles.headerContainer}>
+				{/* Close Button */}
 				<TouchableOpacity
-					onPress={() => navigation.dispatch(CommonActions.goBack())}
+					onPress={() => {
+						Haptics.selectionAsync()
+						navigation.dispatch(CommonActions.goBack())
+					}}
 				>
-					<View style={styles.closeButton}>
-						<X size={18} color='black' />
-					</View>
+					<Text style={{ fontSize: 16, color: '#007aff', fontWeight: 600 }}>
+						Cancel
+					</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={() => addTask()}>
-					<Text style={{ fontSize: 19, color: '#007aff' }}>Save</Text>
+				{/* Save button */}
+				<TouchableOpacity disabled={!task.title} onPress={() => addTask()}>
+					<Text
+						style={[
+							{ fontSize: 18, fontWeight: 600 },
+							!task.title ? { color: '#a8a8aa' } : { color: '#007aff' },
+						]}
+					>
+						Add
+					</Text>
 				</TouchableOpacity>
 			</View>
 
@@ -80,7 +91,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	closeButton: {
-		backgroundColor: '#d1d1d1',
+		backgroundColor: '#4e4e54',
 		padding: 6,
 		borderRadius: 60,
 		alignItems: 'center',

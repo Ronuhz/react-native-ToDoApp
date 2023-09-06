@@ -1,18 +1,20 @@
 import { View, Text, StyleSheet } from 'react-native'
+import { Circle, CheckCircle } from 'lucide-react-native'
 
 const Task = ({ text, color, completed }) => {
 	return (
 		<View style={[styles.item, { backgroundColor: color }]}>
-			<View style={styles.itemLeft}>
-				<View
-					style={[styles.square, completed ? styles.completedSquare : null]}
-				></View>
-				<Text
-					style={[styles.itemText, completed ? styles.completedText : null]}
-				>
-					{text}
-				</Text>
-			</View>
+			{/* Check Circle */}
+			{!completed ? (
+				<Circle size={24} color='#55BCF6' />
+			) : (
+				<CheckCircle size={24} color='#55BCF6' />
+			)}
+
+			{/* Task Text */}
+			<Text style={[styles.itemText, completed ? styles.completedText : null]}>
+				{text}
+			</Text>
 		</View>
 	)
 }
@@ -23,25 +25,18 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'space-between',
+		justifyContent: 'flex-start',
+		gap: 10,
 		marginBottom: 20,
+		shadowColor: 'gray',
+		shadowOpacity: 0.25,
+		shadowRadius: 5,
+		shadowOffset: 1,
 	},
 	itemLeft: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		flexWrap: 'wrap',
-	},
-	completedSquare: {
-		backgroundColor: '#55BCF6',
-	},
-	square: {
-		width: 24,
-		height: 24,
-		opacity: 0.4,
-		borderRadius: 5,
-		marginRight: 15,
-		borderColor: '#55BCF6',
-		borderWidth: 3,
 	},
 	completedText: {
 		textDecorationLine: 'line-through',
