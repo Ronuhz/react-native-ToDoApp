@@ -1,5 +1,5 @@
 import { CommonActions } from '@react-navigation/native'
-import { ActiveTasksContext } from '../../contexts/todo-list.context'
+import { TasksContext } from '../../contexts/todo-list.context'
 import { useContext, useState } from 'react'
 import {
 	View,
@@ -15,11 +15,12 @@ import { useColorPicker } from '../../hooks/useColorPicker'
 import * as Haptics from 'expo-haptics'
 
 const NewTask = ({ navigation }) => {
-	const { activeTasks, setActiveTasks } = useContext(ActiveTasksContext)
+	const { tasks, setTasks } = useContext(TasksContext)
 	const { ColorPicker, color } = useColorPicker()
 	const [task, setTask] = useState({
 		title: '',
 		color: '',
+		done: false,
 	})
 
 	const addTask = () => {
@@ -27,7 +28,7 @@ const NewTask = ({ navigation }) => {
 
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
 
-		setActiveTasks([{ ...task, color }, ...activeTasks])
+		setTasks((prevTasks) => [{ ...task, color }, ...prevTasks])
 
 		Keyboard.dismiss()
 		navigation.dispatch(CommonActions.goBack())
@@ -35,6 +36,7 @@ const NewTask = ({ navigation }) => {
 		setTask({
 			title: '',
 			color: '',
+			done: false,
 		})
 	}
 
